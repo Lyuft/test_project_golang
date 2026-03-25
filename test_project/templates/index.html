@@ -3,177 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Management</title>
+    <title>User Management System</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            overflow: hidden;
-            animation: slideIn 0.5s ease-out;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 30px;
-            text-align: center;
-        }
-
-        .header h1 {
-            font-size: 28px;
-            margin-bottom: 10px;
-        }
-
-        .header p {
-            opacity: 0.9;
-            font-size: 14px;
-        }
-
-        .form-content {
-            padding: 30px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: #333;
+        /* Тот же CSS что и выше, но можно добавить дополнительные стили */
+        .status-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
             font-weight: 600;
-            font-size: 14px;
+            margin-left: 10px;
         }
 
-        input {
-            width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            font-size: 14px;
-            transition: all 0.3s ease;
-            font-family: inherit;
-        }
-
-        input:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        input:hover {
-            border-color: #667eea;
-        }
-
-        button {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-        }
-
-        button:active {
-            transform: translateY(0);
-        }
-
-        .message {
-            margin: 20px 30px 30px 30px;
-            padding: 15px;
-            border-radius: 10px;
-            text-align: center;
+        .debug-info {
+            margin-top: 20px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            font-size: 12px;
+            font-family: monospace;
             display: none;
-            animation: fadeIn 0.3s ease-out;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
-        .error {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-
-        .loading {
-            background-color: #e7f3ff;
-            color: #004085;
-            border: 1px solid #b8daff;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-
-        @media (max-width: 480px) {
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-
-            .form-content {
-                padding: 20px;
-            }
         }
     </style>
 </head>
 <body>
 <div class="container">
     <div class="header">
-        <h1>📝 User Management System</h1>
-        <p>Add new user to the database</p>
+        <h1>🚀 User Management System</h1>
+        <p>REST API with JSON format</p>
     </div>
 
     <div class="form-content">
@@ -195,7 +52,7 @@
 
             <div class="form-group">
                 <label for="password">🔒 Password:</label>
-                <input type="password" id="password" name="password" required placeholder="Enter password">
+                <input type="password" id="password" name="password" required placeholder="Enter password (min 6 characters)">
             </div>
 
             <div class="form-row">
@@ -206,76 +63,135 @@
 
                 <div class="form-group">
                     <label for="age">🎂 Age:</label>
-                    <input type="number" id="age" name="age" required placeholder="Enter age" min="18" max="120">
+                    <input type="number" id="age" name="age" required placeholder="Enter age (18-120)" min="18" max="120">
                 </div>
             </div>
 
             <button type="submit">➕ Add User</button>
         </form>
+
+        <div class="debug-info" id="debugInfo">
+            <strong>Debug Info:</strong>
+            <pre id="debugContent"></pre>
+        </div>
     </div>
 
     <div id="message" class="message"></div>
 </div>
 
 <script>
+    let debugMode = false; // Включите для отладки: установите true
+
     document.getElementById('userForm').addEventListener('submit', async function(e) {
         e.preventDefault();
 
         const messageDiv = document.getElementById('message');
 
+        // Собираем данные в JSON формат
+        const userData = {
+            id: document.getElementById('id').value.trim(),
+            name: document.getElementById('name').value.trim(),
+            email: document.getElementById('email').value.trim(),
+            password: document.getElementById('password').value,
+            department: document.getElementById('department').value.trim(),
+            age: parseInt(document.getElementById('age').value)
+        };
+
+        // Валидация
+        if (userData.age < 18 || userData.age > 120) {
+            messageDiv.style.display = 'block';
+            messageDiv.className = 'message error';
+            messageDiv.textContent = '❌ Age must be between 18 and 120';
+            return;
+        }
+
+        if (userData.password.length < 6) {
+            messageDiv.style.display = 'block';
+            messageDiv.className = 'message error';
+            messageDiv.textContent = '❌ Password must be at least 6 characters';
+            return;
+        }
+
         // Показываем загрузку
         messageDiv.style.display = 'block';
         messageDiv.className = 'message loading';
-        messageDiv.textContent = '⏳ Adding user, please wait...';
+        messageDiv.textContent = '⏳ Sending data to server...';
 
-        // Собираем данные из формы
-        const formData = new FormData();
-        formData.append('id', document.getElementById('id').value);
-        formData.append('name', document.getElementById('name').value);
-        formData.append('email', document.getElementById('email').value);
-        formData.append('password', document.getElementById('password').value);
-        formData.append('department', document.getElementById('department').value);
-        formData.append('age', document.getElementById('age').value);
+        if (debugMode) {
+            document.getElementById('debugInfo').style.display = 'block';
+            document.getElementById('debugContent').textContent = JSON.stringify(userData, null, 2);
+        }
 
         try {
-            // Отправляем как form-data
+            // Отправляем JSON
             const response = await fetch('/add-user', {
                 method: 'POST',
-                body: formData  // Не устанавливаем Content-Type, браузер установит сам с boundary
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(userData)
             });
 
-            // Получаем ответ как текст для отладки
+            // Получаем raw ответ для отладки
             const responseText = await response.text();
-            console.log('Server response:', responseText);
 
-            // Пытаемся распарсить JSON
+            if (debugMode) {
+                document.getElementById('debugContent').textContent += '\n\nResponse Status: ' + response.status;
+                document.getElementById('debugContent').textContent += '\nResponse Body: ' + responseText;
+            }
+
+            // Парсим JSON ответ
             let result;
             try {
                 result = JSON.parse(responseText);
             } catch (e) {
-                console.error('Failed to parse JSON:', responseText);
-                throw new Error('Server returned invalid response format');
+                console.error('Parse error. Raw response:', responseText);
+                throw new Error(`Server returned invalid JSON. Response: ${responseText.substring(0, 100)}`);
             }
 
             if (response.ok && result.success) {
-                // Успех
                 messageDiv.className = 'message success';
                 messageDiv.textContent = '✅ ' + (result.message || 'User added successfully!');
                 document.getElementById('userForm').reset();
 
-                // Авто-скрытие через 3 секунды
                 setTimeout(() => {
                     messageDiv.style.display = 'none';
+                    if (debugMode) {
+                        document.getElementById('debugInfo').style.display = 'none';
+                    }
                 }, 3000);
             } else {
-                // Ошибка от сервера
                 messageDiv.className = 'message error';
-                messageDiv.textContent = '❌ ' + (result.error || result.message || 'Failed to add user');
+                const errorMsg = result.error || result.message || 'Failed to add user';
+                messageDiv.textContent = '❌ ' + errorMsg;
             }
         } catch (error) {
-            console.error('Network error:', error);
+            console.error('Network/Parse error:', error);
             messageDiv.className = 'message error';
-            messageDiv.textContent = '❌ Connection error: ' + error.message + '. Make sure the server is running.';
+            messageDiv.textContent = '❌ Error: ' + error.message;
+
+            if (debugMode) {
+                document.getElementById('debugContent').textContent += '\n\nError: ' + error.message;
+            }
+        }
+    });
+
+    // Добавляем клавиатурную поддержку
+    document.getElementById('userForm').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
+            e.preventDefault();
+            this.querySelector('button').click();
+        }
+    });
+
+    // Включить debug режим по нажатию Ctrl+D
+    document.addEventListener('keydown', function(e) {
+        if (e.ctrlKey && e.key === 'd') {
+            debugMode = !debugMode;
+            if (!debugMode) {
+                document.getElementById('debugInfo').style.display = 'none';
+            }
+            console.log('Debug mode:', debugMode);
         }
     });
 </script>

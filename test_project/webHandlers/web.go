@@ -27,24 +27,25 @@ func (h *WebHandler) Index(c *gin.Context) {
 	}
 }
 
-func (h *WebHandler) AddUser(c *gin.Context) {
-
-	var user struct {
-		ID         string `json:"id"`
-		Name       string `json:"name"`
-		Email      string `json:"email"`
-		Password   string `json:"password"`
-		Department string `json:"department"`
-		Age        int    `json:"age"`
+func (h *WebHandler) CreateUser(c *gin.Context) {
+	var req struct {
+		ID         string `json:"id" binding:"required"`
+		Name       string `json:"name" binding:"required"`
+		Email      string `json:"email" binding:"required,email"`
+		Password   string `json:"password" binding:"required,min=6"`
+		Department string `json:"department" binding:"required"`
+		Age        int    `json:"age" binding:"required,min=18,max=120"`
 	}
 
-	if err := c.ShouldBindJSON(&user); err != nil {
+	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "Invalid JSON format: " + err.Error(),
+			"error": err.Error(),
 		})
 		return
 	}
 
-	service.AddUser(user.ID, user.Name, user.Email, user.Password, user.Department, strconv.Itoa(user.Age))
+	ageStr := strconv.Itoa(req.Age)
 
+	service.AddUser(req.ID, req.Name, req.Email, req.Password, req.Department, ageStr)
+	return
 }
