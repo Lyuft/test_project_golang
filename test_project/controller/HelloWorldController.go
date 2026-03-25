@@ -10,4 +10,5 @@ func SetupRoutes(r *gin.Engine, webHandler *webHandlers.WebHandler) {
 
 	// Веб-интерфейс
 	r.GET("/", webHandler.Index)
+	r.GET("/add-user", webHandler.AddUser)
 }
