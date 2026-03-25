@@ -3,6 +3,7 @@ package webHandlers
 import (
 	"html/template"
 	"net/http"
+	"strconv"
 	"test_project/service"
 
 	"github.com/gin-gonic/gin"
@@ -27,14 +28,22 @@ func (h *WebHandler) Index(c *gin.Context) {
 }
 
 func (h *WebHandler) AddUser(c *gin.Context) {
-	// Получаем данные из формы
-	id := c.PostForm("id")
-	name := c.PostForm("name")
-	email := c.PostForm("email")
-	password := c.PostForm("password")
-	department := c.PostForm("department")
-	age := c.PostForm("age")
 
-	service.AddUser(id, name, email, password, department, age)
+	var user struct {
+		ID         string `json:"id"`
+		Name       string `json:"name"`
+		Email      string `json:"email"`
+		Password   string `json:"password"`
+		Department string `json:"department"`
+		Age        int    `json:"age"`
+	}
+	if err := c.ShouldBindJSON(&user); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Invalid JSON format: " + err.Error(),
+		})
+		return
+	}
+
+	service.AddUser(user.ID, user.Email, user.Department, user.Password, user.Name, strconv.Itoa(user.Age))
 
 }
