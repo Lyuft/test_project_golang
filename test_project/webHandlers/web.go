@@ -37,6 +37,7 @@ func (h *WebHandler) AddUser(c *gin.Context) {
 		Department string `json:"department"`
 		Age        int    `json:"age"`
 	}
+
 	if err := c.ShouldBindJSON(&user); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "Invalid JSON format: " + err.Error(),
@@ -44,6 +45,6 @@ func (h *WebHandler) AddUser(c *gin.Context) {
 		return
 	}
 
-	service.AddUser(user.ID, user.Email, user.Department, user.Password, user.Name, strconv.Itoa(user.Age))
+	service.AddUser(user.ID, user.Name, user.Email, user.Password, user.Department, strconv.Itoa(user.Age))
 
 }

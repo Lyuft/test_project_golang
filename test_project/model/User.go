@@ -11,13 +11,3 @@ type User struct {
 	age        int    `db:"age"`
 	department string `db:"department"`
 }
-
-// Модель json данных.
-type AddUserRequest struct {
-	ID         string `json:"id"`
-	Name       string `json:"name"`
-	Email      string `json:"email"`
-	Password   string `json:"password"`
-	Department string `json:"department"`
-	Age        int    `json:"age"`
-}
