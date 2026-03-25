@@ -20,5 +20,4 @@ func InsertUser(id, name, email, password, department, age string) {
 		return
 	}
 	defer db.Close()
-	return
 }

@@ -41,11 +41,9 @@ func (h *WebHandler) CreateUser(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
-		return
 	}
 
 	ageStr := strconv.Itoa(req.Age)
 
 	service.AddUser(req.ID, req.Name, req.Email, req.Password, req.Department, ageStr)
-	return
 }
