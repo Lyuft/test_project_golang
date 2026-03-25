@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"test_project/webHandlers"
+	"test_project/crud/webHandlers"
 
 	"github.com/gin-gonic/gin"
 )

@@ -5,8 +5,8 @@ import (
 	"log"
 	"path/filepath"
 	"test_project/config"
-	"test_project/controller"
-	"test_project/webHandlers"
+	"test_project/crud/controller"
+	"test_project/crud/webHandlers"
 
 	"github.com/gin-gonic/gin"
 )
