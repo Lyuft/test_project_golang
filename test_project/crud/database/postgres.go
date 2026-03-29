@@ -17,6 +17,7 @@ type PostgresDB struct {
 func CreatePostgres(host, port, user, password, dbname string) (*PostgresDB, error) {
 	dsn := fmt.Sprintln(
 		"host="+host,
+		"port="+port,
 		"user="+user,
 		"password="+password,
 		"dbname="+dbname,
