@@ -4,17 +4,22 @@ import (
 	"html/template"
 	"net/http"
 	"strconv"
+	"test_project/model/UserStruct"
 	"test_project/service"
 
 	"github.com/gin-gonic/gin"
 )
 
 type WebHandler struct {
-	tmpl *template.Template
+	tmpl        *template.Template
+	userService *service.UserService
 }
 
-func NewWebHandler(tmpl *template.Template) *WebHandler {
-	return &WebHandler{tmpl: tmpl}
+func NewWebHandler(userService *service.UserService, tmpl *template.Template) *WebHandler {
+	return &WebHandler{
+		userService: userService,
+		tmpl:        tmpl,
+	}
 }
 
 // Index – отображает список всех элементов
@@ -27,23 +32,18 @@ func (h *WebHandler) Index(c *gin.Context) {
 	}
 }
 
-func (h *WebHandler) CreateUser(c *gin.Context) {
-	var req struct {
-		ID         string `json:"id" binding:"required"`
-		Name       string `json:"name" binding:"required"`
-		Email      string `json:"email" binding:"required,email"`
-		Password   string `json:"password" binding:"required,min=6"`
-		Department string `json:"department" binding:"required"`
-		Age        int    `json:"age" binding:"required,min=18,max=120"`
+// Метод который берет данные с веб и пускает их по всему пути!
+func (h *WebHandler) AddUser(c *gin.Context) {
+	user := &UserStruct.User{
+		Name:       c.PostForm("name"),
+		Email:      c.PostForm("email"),
+		Password:   c.PostForm("password"),
+		Department: c.PostForm("department"),
 	}
-
-	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
+	user.Age, _ = strconv.Atoi(c.PostForm("age"))
+	if err := h.userService.AddUserService(user); err != nil {
+		c.String(http.StatusBadRequest, "Ошибка: %v", err)
+		return
 	}
-
-	ageStr := strconv.Itoa(req.Age)
-
-	service.AddUser(req.ID, req.Name, req.Email, req.Password, req.Department, ageStr)
+	c.Redirect(http.StatusFound, "/")
 }

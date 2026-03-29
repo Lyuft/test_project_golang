@@ -1,197 +1,53 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Management System</title>
+    <title>Добавить пользователя</title>
     <style>
-        /* Тот же CSS что и выше, но можно добавить дополнительные стили */
-        .status-badge {
-            display: inline-block;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 600;
-            margin-left: 10px;
-        }
-
-        .debug-info {
-            margin-top: 20px;
-            padding: 10px;
-            background: #f8f9fa;
-            border-radius: 8px;
-            font-size: 12px;
-            font-family: monospace;
-            display: none;
-        }
+        body { font-family: Arial; padding: 20px; }
+        input { margin: 5px; padding: 8px; width: 200px; display: block; }
+        button { padding: 8px 20px; background: #4CAF50; color: white; border: none; cursor: pointer; margin-top: 10px; }
+        .success { color: green; margin-top: 10px; }
+        .error { color: red; margin-top: 10px; }
     </style>
 </head>
 <body>
-<div class="container">
-    <div class="header">
-        <h1>🚀 User Management System</h1>
-        <p>REST API with JSON format</p>
-    </div>
-
-    <div class="form-content">
-        <form id="userForm">
-            <div class="form-group">
-                <label for="id">🆔 User ID:</label>
-                <input type="text" id="id" name="id" required placeholder="Enter unique user ID">
-            </div>
-
-            <div class="form-group">
-                <label for="name">👤 Full Name:</label>
-                <input type="text" id="name" name="name" required placeholder="Enter full name">
-            </div>
-
-            <div class="form-group">
-                <label for="email">📧 Email Address:</label>
-                <input type="email" id="email" name="email" required placeholder="Enter email address">
-            </div>
-
-            <div class="form-group">
-                <label for="password">🔒 Password:</label>
-                <input type="password" id="password" name="password" required placeholder="Enter password (min 6 characters)">
-            </div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="department">🏢 Department:</label>
-                    <input type="text" id="department" name="department" required placeholder="Enter department">
-                </div>
-
-                <div class="form-group">
-                    <label for="age">🎂 Age:</label>
-                    <input type="number" id="age" name="age" required placeholder="Enter age (18-120)" min="18" max="120">
-                </div>
-            </div>
-
-            <button type="submit">➕ Add User</button>
-        </form>
-
-        <div class="debug-info" id="debugInfo">
-            <strong>Debug Info:</strong>
-            <pre id="debugContent"></pre>
-        </div>
-    </div>
-
-    <div id="message" class="message"></div>
-</div>
+<h2>Добавить пользователя</h2>
+<form id="userForm">
+    <input type="text" name="name" placeholder="Имя" required>
+    <input type="email" name="email" placeholder="Email" required>
+    <input type="password" name="password" placeholder="Пароль" required>
+    <input type="number" name="age" placeholder="Возраст">
+    <input type="text" name="department" placeholder="Отдел">
+    <button type="submit">Создать</button>
+</form>
+<div id="message"></div>
 
 <script>
-    let debugMode = false; // Включите для отладки: установите true
-
-    document.getElementById('userForm').addEventListener('submit', async function(e) {
+    document.getElementById('userForm').addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        const messageDiv = document.getElementById('message');
-
-        // Собираем данные в JSON формат
-        const userData = {
-            id: document.getElementById('id').value.trim(),
-            name: document.getElementById('name').value.trim(),
-            email: document.getElementById('email').value.trim(),
-            password: document.getElementById('password').value,
-            department: document.getElementById('department').value.trim(),
-            age: parseInt(document.getElementById('age').value)
-        };
-
-        // Валидация
-        if (userData.age < 18 || userData.age > 120) {
-            messageDiv.style.display = 'block';
-            messageDiv.className = 'message error';
-            messageDiv.textContent = '❌ Age must be between 18 and 120';
-            return;
-        }
-
-        if (userData.password.length < 6) {
-            messageDiv.style.display = 'block';
-            messageDiv.className = 'message error';
-            messageDiv.textContent = '❌ Password must be at least 6 characters';
-            return;
-        }
-
-        // Показываем загрузку
-        messageDiv.style.display = 'block';
-        messageDiv.className = 'message loading';
-        messageDiv.textContent = '⏳ Sending data to server...';
-
-        if (debugMode) {
-            document.getElementById('debugInfo').style.display = 'block';
-            document.getElementById('debugContent').textContent = JSON.stringify(userData, null, 2);
-        }
+        const formData = new FormData(e.target);
 
         try {
-            // Отправляем JSON
-            const response = await fetch('/add-user', {
+            const response = await fetch('/api/users', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(userData)
+                body: formData
             });
 
-            // Получаем raw ответ для отладки
-            const responseText = await response.text();
+            const text = await response.text();
+            const messageDiv = document.getElementById('message');
 
-            if (debugMode) {
-                document.getElementById('debugContent').textContent += '\n\nResponse Status: ' + response.status;
-                document.getElementById('debugContent').textContent += '\nResponse Body: ' + responseText;
-            }
-
-            // Парсим JSON ответ
-            let result;
-            try {
-                result = JSON.parse(responseText);
-            } catch (e) {
-                console.error('Parse error. Raw response:', responseText);
-                throw new Error(`Server returned invalid JSON. Response: ${responseText.substring(0, 100)}`);
-            }
-
-            if (response.ok && result.success) {
-                messageDiv.className = 'message success';
-                messageDiv.textContent = '✅ ' + (result.message || 'User added successfully!');
-                document.getElementById('userForm').reset();
-
-                setTimeout(() => {
-                    messageDiv.style.display = 'none';
-                    if (debugMode) {
-                        document.getElementById('debugInfo').style.display = 'none';
-                    }
-                }, 3000);
+            if (response.ok) {
+                messageDiv.className = 'success';
+                messageDiv.innerHTML = '✅ Пользователь успешно создан! <a href="/">Обновить</a>';
+                e.target.reset();
             } else {
-                messageDiv.className = 'message error';
-                const errorMsg = result.error || result.message || 'Failed to add user';
-                messageDiv.textContent = '❌ ' + errorMsg;
+                messageDiv.className = 'error';
+                messageDiv.innerHTML = '❌ ' + text;
             }
         } catch (error) {
-            console.error('Network/Parse error:', error);
-            messageDiv.className = 'message error';
-            messageDiv.textContent = '❌ Error: ' + error.message;
-
-            if (debugMode) {
-                document.getElementById('debugContent').textContent += '\n\nError: ' + error.message;
-            }
-        }
-    });
-
-    // Добавляем клавиатурную поддержку
-    document.getElementById('userForm').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
-            e.preventDefault();
-            this.querySelector('button').click();
-        }
-    });
-
-    // Включить debug режим по нажатию Ctrl+D
-    document.addEventListener('keydown', function(e) {
-        if (e.ctrlKey && e.key === 'd') {
-            debugMode = !debugMode;
-            if (!debugMode) {
-                document.getElementById('debugInfo').style.display = 'none';
-            }
-            console.log('Debug mode:', debugMode);
+            document.getElementById('message').innerHTML = '❌ Ошибка: ' + error.message;
         }
     });
 </script>

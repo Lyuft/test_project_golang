@@ -1,23 +1,32 @@
 package repository
 
 import (
-	"log"
-	"test_project/config"
+	"database/sql"
+	"fmt"
+	"test_project/model/UserStruct"
 )
 
 /*
 В этом файле нужно будет работать с бд, доставать, сохранять и удалять пользователей
 */
-// Функция вставки нового пользователя.
-func InsertUser(id, name, email, password, department, age string) {
-	db, err := config.NewDB()
+
+type UserRepository struct {
+	db *sql.DB
+}
+
+func NewUserRepository(db *sql.DB) *UserRepository {
+	return &UserRepository{db: db}
+}
+
+// Метод создания юзера в БД.
+func (r *UserRepository) Create(u *UserStruct.User) error { // ← используем UserStruct.User
+	query := `INSERT INTO users (name, email, password, department, age) 
+	          VALUES ($1, $2, $3, $4, $5) 
+	          RETURNING id`
+	err := r.db.QueryRow(query, u.Name, u.Email,
+		u.Password, u.Department, u.Age).Scan(&u.ID)
 	if err != nil {
-		log.Fatal("Failed to connect to DB:", err)
+		return fmt.Errorf("failed to create user: %w", err)
 	}
-	query := `INSERT INTO users (id, name, email, password, department, age) VALUES ($1, $2, $3, $4, $5, $6)`
-	_, err = db.Exec(query, id, name, email, password, department, age)
-	if err != nil {
-		return
-	}
-	defer db.Close()
+	return nil
 }
