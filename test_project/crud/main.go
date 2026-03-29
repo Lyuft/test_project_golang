@@ -1,38 +1,47 @@
 package main
 
 import (
-	"html/template"
 	"log"
-	"path/filepath"
-	"test_project/config"
-	"test_project/crud/controller"
-	"test_project/crud/webHandlers"
+	"test_project/crud/handler"
+	"test_project/crud/router"
+	"test_project/crud/service"
 
-	"github.com/gin-gonic/gin"
+	"test_project/crud/config"
+	"test_project/crud/database"
+	"test_project/crud/repository"
 )
 
 func main() {
+	cfg := config.Сonfig()
 
-	// Создаём роутер Gin
-	router := gin.Default()
+	db, err := database.CreatePostgres(
+		cfg.DBHost,
+		cfg.DBPort,
+		cfg.DBUser,
+		cfg.DBPassword,
+		cfg.DBName,
+	)
 
-	tmpl, err := template.ParseGlob(filepath.Join("templates", "*.html"))
 	if err != nil {
-		log.Fatal("template parse error", err)
+		log.Fatal("Failed to connect database", err)
 	}
 
-	webHandler := webHandlers.NewWebHandler(tmpl)
+	defer func(db *database.PostgresDB) {
+		if err := db.Close(); err != nil {
+			log.Fatal("Failed to close database:", err)
+		}
+	}(db)
 
-	controller.SetupRoutes(router, webHandler)
-	// Подключаемся к БД
-	db, err := config.NewDB()
-	if err != nil {
-		log.Fatal("Failed to connect to DB:", err)
-	}
-	defer db.Close() // закрываем соединение при завершении приложения
+	log.Println("Database connected")
 
-	// Запускаем сервер
-	if err := router.Run(":8080"); err != nil {
-		log.Fatal("Failed to run server:", err)
+	itemRepo := repository.FabricItemRepository(db.DB)
+	itemService := service.FabricItemService(itemRepo)
+	itemHandler := handler.FabricItemHandler(itemService)
+
+	route := router.SetupRouter(itemHandler)
+
+	log.Printf("Server starting on port %s", cfg.ServerPort)
+	if err := route.Run(":" + cfg.ServerPort); err != nil {
+		log.Fatal("Failed to start server:", err)
 	}
 }
