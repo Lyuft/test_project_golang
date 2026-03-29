@@ -1,0 +1,103 @@
+{
+  "hash": "46c08dfd",
+  "configHash": "d4ecbaf3",
+  "lockfileHash": "fd9ec641",
+  "browserHash": "682a7c85",
+  "optimized": {
+    "@angular/common/http": {
+      "src": "../../../../../../node_modules/@angular/common/fesm2022/http.mjs",
+      "file": "@angular_common_http.js",
+      "fileHash": "cb5615ce",
+      "needsInterop": false
+    },
+    "@angular/core": {
+      "src": "../../../../../../node_modules/@angular/core/fesm2022/core.mjs",
+      "file": "@angular_core.js",
+      "fileHash": "28fa0d24",
+      "needsInterop": false
+    },
+    "@angular/core/rxjs-interop": {
+      "src": "../../../../../../node_modules/@angular/core/fesm2022/rxjs-interop.mjs",
+      "file": "@angular_core_rxjs-interop.js",
+      "fileHash": "3e3d217b",
+      "needsInterop": false
+    },
+    "@angular/platform-browser": {
+      "src": "../../../../../../node_modules/@angular/platform-browser/fesm2022/platform-browser.mjs",
+      "file": "@angular_platform-browser.js",
+      "fileHash": "e94e2437",
+      "needsInterop": false
+    },
+    "@angular/platform-browser/animations": {
+      "src": "../../../../../../node_modules/@angular/platform-browser/fesm2022/animations.mjs",
+      "file": "@angular_platform-browser_animations.js",
+      "fileHash": "00ace776",
+      "needsInterop": false
+    },
+    "@angular/router": {
+      "src": "../../../../../../node_modules/@angular/router/fesm2022/router.mjs",
+      "file": "@angular_router.js",
+      "fileHash": "b5464ce3",
+      "needsInterop": false
+    },
+    "@taiga-ui/addon-table": {
+      "src": "../../../../../../node_modules/@taiga-ui/addon-table/fesm2022/taiga-ui-addon-table.mjs",
+      "file": "@taiga-ui_addon-table.js",
+      "fileHash": "6ac98088",
+      "needsInterop": false
+    },
+    "@taiga-ui/core": {
+      "src": "../../../../../../node_modules/@taiga-ui/core/fesm2022/taiga-ui-core.mjs",
+      "file": "@taiga-ui_core.js",
+      "fileHash": "6b9b8483",
+      "needsInterop": false
+    },
+    "@taiga-ui/event-plugins": {
+      "src": "../../../../../../node_modules/@taiga-ui/event-plugins/fesm2022/taiga-ui-event-plugins.mjs",
+      "file": "@taiga-ui_event-plugins.js",
+      "fileHash": "e7aab549",
+      "needsInterop": false
+    },
+    "rxjs": {
+      "src": "../../../../../../node_modules/rxjs/dist/esm5/index.js",
+      "file": "rxjs.js",
+      "fileHash": "db3f0ca6",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "chunk-2UDURBLU": {
+      "file": "chunk-2UDURBLU.js"
+    },
+    "chunk-AOZU4WIZ": {
+      "file": "chunk-AOZU4WIZ.js"
+    },
+    "chunk-P35NFK3Y": {
+      "file": "chunk-P35NFK3Y.js"
+    },
+    "chunk-AMAZA7M3": {
+      "file": "chunk-AMAZA7M3.js"
+    },
+    "chunk-BC4PMDKU": {
+      "file": "chunk-BC4PMDKU.js"
+    },
+    "chunk-J36ZAYF3": {
+      "file": "chunk-J36ZAYF3.js"
+    },
+    "chunk-IHAK26QT": {
+      "file": "chunk-IHAK26QT.js"
+    },
+    "chunk-DEBYPIGP": {
+      "file": "chunk-DEBYPIGP.js"
+    },
+    "chunk-EIFE64Y5": {
+      "file": "chunk-EIFE64Y5.js"
+    },
+    "chunk-M5JT76BW": {
+      "file": "chunk-M5JT76BW.js"
+    },
+    "chunk-7XKNWGE2": {
+      "file": "chunk-7XKNWGE2.js"
+    }
+  }
+}
