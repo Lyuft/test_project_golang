@@ -54,7 +54,7 @@ func (h *ItemHandler) GetAll(ctx *gin.Context) {
 }
 
 func (h *ItemHandler) GetByID(ctx *gin.Context) {
-	id, ok := helpers.ParseID(ctx)
+	id, ok := helpers.ParseIDHelper(ctx)
 
 	if !ok {
 		return
@@ -71,7 +71,7 @@ func (h *ItemHandler) GetByID(ctx *gin.Context) {
 }
 
 func (h *ItemHandler) Update(ctx *gin.Context) {
-	id, ok := helpers.ParseID(ctx)
+	id, ok := helpers.ParseIDHelper(ctx)
 
 	if !ok {
 		return
@@ -95,7 +95,7 @@ func (h *ItemHandler) Update(ctx *gin.Context) {
 }
 
 func (h *ItemHandler) Delete(ctx *gin.Context) {
-	id, ok := helpers.ParseID(ctx)
+	id, ok := helpers.ParseIDHelper(ctx)
 
 	if !ok {
 		return
